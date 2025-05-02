@@ -2,49 +2,175 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>職印ジェネレーター</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; }
-    canvas { border: 1px solid #ccc; margin: 10px; }
-    .canvas-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-    .input-row { margin-bottom: 10px; }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .input-row input,
+    .input-row select {
+      font-size: 1rem;
+      padding: 5px;
+      min-width: 100px;
+    }
+	.input-row label {
+	  display: inline-flex;
+	  align-items: center;
+	  gap: 4px;
+	}
+
+    .canvas-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    canvas {
+      border: 1px solid #ccc;
+      margin: 10px;
+    }
+
+    button {
+      margin-top: 5px;
+      font-size: 1rem;
+      padding: 6px 12px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .social-icons a {
+      margin: 0 10px;
+    }
+
+    .social-icons i {
+      font-size: 28px;
+      color: #333;
+      transition: transform 0.3s ease;
+    }
+
+    .social-icons i:hover {
+      transform: scale(1.1);
+    }
+
+    .footer-text {
+      margin: 0 0 10px 0;
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .follow-text {
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .input-row {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .canvas-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      canvas {
+        width: 100px;
+        height: 100px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>職印ジェネレーター</h1>
-  <div class="input-row">
-    上部文字: <input type="text" id="topText" maxlength="5" value="藤" />
-    下部文字: <input type="text" id="bottomText" maxlength="5" value="岡" />
-    日付: <input type="date" id="dateInput" />
-    色: 
-    <select id="colorSelect">
-      <option value="red">赤</option>
-      <option value="black">黒</option>
-    </select>
-  </div>
-  <div class="canvas-container">
-    <div>
-      <canvas id="canvas1" width="200" height="200"></canvas><br>
-      <button onclick="copyCanvas('canvas1')">コピー</button>
+  <main>
+    <h1>職印ジェネレーター</h1>
+	<div class="input-row">
+	  <label><span>所属:</span> <input type="text" id="topText" maxlength="5" value="〇△部" /></label>
+	  <label><span>名前:</span> <input type="text" id="bottomText" maxlength="5" value="鈴木" /></label>
+	  <label><span>日付:</span> <input type="date" id="dateInput" /></label>
+	  <label><span>色:</span>
+	    <select id="colorSelect">
+	      <option value="red">赤</option>
+	      <option value="black">黒</option>
+	    </select>
+	  </label>
+	</div>
+
+    <div class="canvas-container">
+      <div>
+        <canvas id="canvas1" width="120" height="120"></canvas><br>
+        <button onclick="copyCanvas('canvas1')">コピー</button>
+      </div>
+      <div>
+        <canvas id="canvas2" width="120" height="120"></canvas><br>
+        <button onclick="copyCanvas('canvas2')">コピー</button>
+      </div>
+      <div>
+        <canvas id="canvas3" width="120" height="120"></canvas><br>
+        <button onclick="copyCanvas('canvas3')">コピー</button>
+      </div>
     </div>
-    <div>
-      <canvas id="canvas2" width="200" height="200"></canvas><br>
-      <button onclick="copyCanvas('canvas2')">コピー</button>
+  </main>
+
+  <footer>
+    <div class="footer-text">
+      <span><a href="https://www.adss1myopathy.com" target="_blank" aria-label="HP">ADSS1ミオパチー患者家族会</a> は100万人に1人しかいない超希少疾患であるADSS1ミオパチーの認知を広め克服するための活動をしています</span>
     </div>
-    <div>
-      <canvas id="canvas3" width="200" height="200"></canvas><br>
-      <button onclick="copyCanvas('canvas3')">コピー</button>
+
+    <div class="follow-text">
+      情報拡散にご協力ください. Follow us !!
     </div>
-  </div>
+
+    <div class="social-icons">
+      <a href="https://www.facebook.com/adss1myopathy/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+      <a href="https://www.instagram.com/adss1myopathy/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://x.com/adss1myopathy" target="_blank" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+      <a href="https://note.com/adss1myopathy" target="_blank" aria-label="Note"><i class=" fa-solid fa-blog"></i></a>
+    </div>
+  </footer>
+
   <script>
     const topTextInput = document.getElementById('topText');
     const bottomTextInput = document.getElementById('bottomText');
     const dateInput = document.getElementById('dateInput');
     const colorSelect = document.getElementById('colorSelect');
 
-    // Set default date to today
     const today = new Date().toISOString().split('T')[0];
-    dateInput.value = today;
+    const savedData = JSON.parse(localStorage.getItem('shokuinStampData') || '{}');
+    topTextInput.value = savedData.topText || '〇△部';
+    bottomTextInput.value = savedData.bottomText || '鈴木';
+    dateInput.value = savedData.date || today;
+    colorSelect.value = savedData.color || 'red';
 
     const canvases = [
       { id: 'canvas1', scale: 1.0, rotation: 0 },
@@ -60,14 +186,15 @@
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext('2d');
       const size = canvas.width;
+      const fonts = { main: 'MS Mincho', date: 'MS Mincho' };
+      const fontSizes = { main: size / 50 * 9, date: size / 50 * 8 };
+
       ctx.clearRect(0, 0, size, size);
       ctx.save();
-
-      // Apply rotation and scaling
-      ctx.translate(size/2, size/2);
+      ctx.translate(size / 2, size / 2);
       ctx.rotate(rotation);
       ctx.scale(scale, scale);
-      ctx.translate(-size/2, -size/2);
+      ctx.translate(-size / 2, -size / 2);
 
       const color = colorSelect.value;
       const topText = topTextInput.value;
@@ -76,54 +203,52 @@
 
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
-      ctx.lineWidth = 5;
+      ctx.lineWidth = 3;
 
-      // Outer circle
       ctx.beginPath();
-      ctx.arc(size/2, size/2, size/2 - 5, 0, 2 * Math.PI);
+      ctx.arc(size / 2, size / 2, size / 2 - ctx.lineWidth, 0, 2 * Math.PI);
       ctx.stroke();
 
-      // Text settings
-      ctx.font = '36px "MS Mincho", serif';
+      ctx.font = `${fontSizes.main}px "${fonts.main}", serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      ctx.fillText(topText, size / 2, size / 2 - size / 4 - ctx.lineWidth);
 
-      // Top text
-      ctx.fillText(topText, size/2, size/2 - 55);
-
-      // Horizontal line above date
       ctx.beginPath();
-      ctx.moveTo(10, size/2 - 25);
-      ctx.lineTo(size - 10, size/2 - 25);
+      ctx.moveTo(ctx.lineWidth * 2, size / 2 - size / 8);
+      ctx.lineTo(size - ctx.lineWidth * 2, size / 2 - size / 8);
       ctx.stroke();
 
-      // Date
-      ctx.font = '32px "MS Mincho", serif';
-      ctx.fillText(dateText, size/2, size/2);
+      ctx.font = `${fontSizes.date}px "${fonts.date}", serif`;
+      ctx.fillText(dateText, size / 2, size / 2);
 
-      // Horizontal line below date
       ctx.beginPath();
-      ctx.moveTo(10, size/2 + 25);
-      ctx.lineTo(size - 10, size/2 + 25);
+      ctx.moveTo(ctx.lineWidth * 2, size / 2 + size / 8);
+      ctx.lineTo(size - ctx.lineWidth * 2, size / 2 + size / 8);
       ctx.stroke();
 
-      // Bottom text
-      ctx.font = '36px "MS Mincho", serif';
-      ctx.fillText(bottomText, size/2, size/2 + 55);
+      ctx.font = `${fontSizes.main}px "${fonts.main}", serif`;
+      ctx.fillText(bottomText, size / 2, size / 2 + size / 4 + ctx.lineWidth);
 
       ctx.restore();
     }
 
     function copyCanvas(id) {
+      const data = {
+        topText: topTextInput.value,
+        bottomText: bottomTextInput.value,
+        date: dateInput.value,
+        color: colorSelect.value
+      };
+      localStorage.setItem('shokuinStampData', JSON.stringify(data));
+
       const canvas = document.getElementById(id);
       canvas.toBlob(blob => {
-        navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob })
-        ]).then(() => alert("コピーしました！"));
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+        .then(() => alert("コピーしました！"));
       });
     }
 
-    // Redraw on input
     [topTextInput, bottomTextInput, dateInput, colorSelect].forEach(input => {
       input.addEventListener('input', drawAll);
     });
