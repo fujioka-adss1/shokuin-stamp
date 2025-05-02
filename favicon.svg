@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- メインの丸い印鑑の形 -->
+  <circle cx="16" cy="16" r="14" fill="white" stroke="#E60012" stroke-width="2"/>
+  
+  <!-- 印鑑内の横線（上） -->
+  <line x1="7" y1="12" x2="25" y2="12" stroke="#E60012" stroke-width="1.5"/>
+  
+  <!-- 印鑑内の横線（下） -->
+  <line x1="7" y1="20" x2="25" y2="20" stroke="#E60012" stroke-width="1.5"/>
+</svg>
