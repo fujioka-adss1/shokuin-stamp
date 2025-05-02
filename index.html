@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>職印ジェネレーター</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    canvas { border: 1px solid #ccc; margin: 10px; }
+    .canvas-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .input-row { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>職印ジェネレーター</h1>
+  <div class="input-row">
+    上部文字: <input type="text" id="topText" maxlength="5" value="藤" />
+    下部文字: <input type="text" id="bottomText" maxlength="5" value="岡" />
+    日付: <input type="date" id="dateInput" />
+    色: 
+    <select id="colorSelect">
+      <option value="red">赤</option>
+      <option value="black">黒</option>
+    </select>
+  </div>
+  <div class="canvas-container">
+    <div>
+      <canvas id="canvas1" width="200" height="200"></canvas><br>
+      <button onclick="copyCanvas('canvas1')">コピー</button>
+    </div>
+    <div>
+      <canvas id="canvas2" width="200" height="200"></canvas><br>
+      <button onclick="copyCanvas('canvas2')">コピー</button>
+    </div>
+    <div>
+      <canvas id="canvas3" width="200" height="200"></canvas><br>
+      <button onclick="copyCanvas('canvas3')">コピー</button>
+    </div>
+  </div>
+  <script>
+    const topTextInput = document.getElementById('topText');
+    const bottomTextInput = document.getElementById('bottomText');
+    const dateInput = document.getElementById('dateInput');
+    const colorSelect = document.getElementById('colorSelect');
+
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+
+    const canvases = [
+      { id: 'canvas1', scale: 1.0, rotation: 0 },
+      { id: 'canvas2', scale: 0.95, rotation: -3 * Math.PI / 180 },
+      { id: 'canvas3', scale: 0.9, rotation: -6 * Math.PI / 180 }
+    ];
+
+    function drawAll() {
+      canvases.forEach(cfg => drawStamp(cfg.id, cfg.scale, cfg.rotation));
+    }
+
+    function drawStamp(canvasId, scale = 1, rotation = 0) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+      ctx.clearRect(0, 0, size, size);
+      ctx.save();
+
+      // Apply rotation and scaling
+      ctx.translate(size/2, size/2);
+      ctx.rotate(rotation);
+      ctx.scale(scale, scale);
+      ctx.translate(-size/2, -size/2);
+
+      const color = colorSelect.value;
+      const topText = topTextInput.value;
+      const bottomText = bottomTextInput.value;
+      const dateText = dateInput.value.replaceAll('-', '.');
+
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 5;
+
+      // Outer circle
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2 - 5, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      // Text settings
+      ctx.font = '36px "MS Mincho", serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Top text
+      ctx.fillText(topText, size/2, size/2 - 55);
+
+      // Horizontal line above date
+      ctx.beginPath();
+      ctx.moveTo(10, size/2 - 25);
+      ctx.lineTo(size - 10, size/2 - 25);
+      ctx.stroke();
+
+      // Date
+      ctx.font = '32px "MS Mincho", serif';
+      ctx.fillText(dateText, size/2, size/2);
+
+      // Horizontal line below date
+      ctx.beginPath();
+      ctx.moveTo(10, size/2 + 25);
+      ctx.lineTo(size - 10, size/2 + 25);
+      ctx.stroke();
+
+      // Bottom text
+      ctx.font = '36px "MS Mincho", serif';
+      ctx.fillText(bottomText, size/2, size/2 + 55);
+
+      ctx.restore();
+    }
+
+    function copyCanvas(id) {
+      const canvas = document.getElementById(id);
+      canvas.toBlob(blob => {
+        navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]).then(() => alert("コピーしました！"));
+      });
+    }
+
+    // Redraw on input
+    [topTextInput, bottomTextInput, dateInput, colorSelect].forEach(input => {
+      input.addEventListener('input', drawAll);
+    });
+
+    drawAll();
+  </script>
+</body>
+</html>
