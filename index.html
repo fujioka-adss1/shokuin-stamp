@@ -8,7 +8,7 @@
   <meta name="description" content="職印すたんぷは、所属・氏名・日付から職印風の印影画像を簡単に生成できる無料Webツールです。コピー機能やカスタマイズも充実。">
   <meta name="keywords" content="職印, 印影, ハンコ, スタンプ, Webツール, 無料, 画像生成">
 
-  <!-- OGP（Open Graph Protocol） -->
+  <!-- OGP -->
   <meta property="og:title" content="職印すたんぷ">
   <meta property="og:description" content="所属・氏名・日付を入力するだけで、職印風の印影画像を簡単に作成！無料で使えるWebツールです。">
   <meta property="og:type" content="website">
@@ -28,24 +28,22 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" href="favicon.ico">
+
   <style>
     html, body {
       height: 100%;
       margin: 0;
     }
-
     body {
       display: flex;
       flex-direction: column;
       font-family: sans-serif;
       text-align: center;
     }
-
     main {
       flex: 1;
       padding: 20px;
     }
-
     .input-row {
       display: flex;
       flex-wrap: wrap;
@@ -54,81 +52,69 @@
       gap: 10px;
       margin-bottom: 10px;
     }
-
     .input-row input,
     .input-row select {
       font-size: 1rem;
       padding: 5px;
       min-width: 100px;
     }
-
     .zoom-controls {
       margin-bottom: 20px;
     }
-
     .canvas-container {
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
       gap: 20px;
+      overflow-x: auto;
     }
-
+    .canvas-container > div {
+      flex-shrink: 0;
+    }
     canvas {
       border: 1px solid #ccc;
       margin: 10px;
+      width: auto;
+      height: auto;
+      max-width: 100%;
     }
-
     button {
       font-size: 1rem;
       padding: 6px 12px;
     }
-
     footer {
       text-align: center;
       padding: 20px;
       background-color: #f5f5f5;
     }
-
     .social-icons a {
       margin: 0 10px;
     }
-
     .social-icons i {
       font-size: 28px;
       color: #333;
       transition: transform 0.3s ease;
     }
-
     .social-icons i:hover {
       transform: scale(1.1);
     }
-
     .footer-text {
       margin: 0 0 10px 0;
       font-size: 0.8rem;
       color: #555;
     }
-
     .follow-text {
       font-size: 0.8rem;
       font-weight: bold;
       margin-bottom: 10px;
     }
-
     @media (max-width: 600px) {
       .input-row {
         flex-direction: column;
         align-items: center;
       }
-
       .canvas-container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      canvas {
-        width: 100px;
-        height: 100px;
+        flex-direction: row;
+        overflow-x: auto;
       }
     }
   </style>
@@ -136,7 +122,6 @@
 <body>
   <main>
     <h1>職印すたんぷ</h1>
-
     <div class="input-row">
       <label><span>所属:</span> <input type="text" id="topText" maxlength="5" value="〇△部" /></label>
       <label><span>名前:</span> <input type="text" id="bottomText" maxlength="5" value="鈴木" /></label>
@@ -148,14 +133,12 @@
         </select>
       </label>
     </div>
-
     <div class="zoom-controls">
       <button onclick="changeScale(-5)">−</button>
       <span id="scaleDisplay">100%</span>
       <button onclick="changeScale(5)">＋</button>
       <button onclick="resetScale()">リセット</button>
     </div>
-
     <div class="canvas-container">
       <div>
         <canvas id="canvas1" width="120" height="120"></canvas><br>
@@ -171,17 +154,16 @@
       </div>
     </div>
   </main>
-
   <footer>
     <div class="footer-text">
-      <span><a href="https://www.adss1myopathy.com" target="_blank" aria-label="HP">ADSS1ミオパチー患者家族会</a> は100万人に1人しかいない超希少疾患であるADSS1ミオパチーの認知を広め克服するための活動をしています</span>
+      <span><a href="https://www.adss1myopathy.com" target="_blank">ADSS1ミオパチー患者家族会</a> は100万人に1人しかいない超希少疾患であるADSS1ミオパチーの認知を広め克服するための活動をしています</span>
     </div>
     <div class="follow-text">情報拡散にご協力ください. Follow us !!</div>
     <div class="social-icons">
-      <a href="https://www.facebook.com/adss1myopathy/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-      <a href="https://www.instagram.com/adss1myopathy/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="https://x.com/adss1myopathy" target="_blank" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
-      <a href="https://note.com/adss1myopathy" target="_blank" aria-label="Note"><i class=" fa-solid fa-blog"></i></a>
+      <a href="https://www.facebook.com/adss1myopathy/" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://www.instagram.com/adss1myopathy/" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://x.com/adss1myopathy" target="_blank"><i class="fab fa-x-twitter"></i></a>
+      <a href="https://note.com/adss1myopathy" target="_blank"><i class="fa-solid fa-blog"></i></a>
     </div>
   </footer>
 
@@ -194,7 +176,6 @@
 
     const today = new Date().toISOString().split('T')[0];
     const savedData = JSON.parse(localStorage.getItem('shokuinStampData') || '{}');
-
     let scalePercent = savedData.scalePercent || 100;
 
     topTextInput.value = savedData.topText || '〇△部';
