@@ -3,10 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>職印ジェネレーター</title>
+
+  <!-- SEO -->
+  <meta name="description" content="職印すたんぷは、所属・氏名・日付から職印風の印影画像を簡単に生成できる無料Webツールです。コピー機能やカスタマイズも充実。">
+  <meta name="keywords" content="職印, 印影, ハンコ, スタンプ, Webツール, 無料, 画像生成">
+
+  <!-- OGP（Open Graph Protocol） -->
+  <meta property="og:title" content="職印すたんぷ">
+  <meta property="og:description" content="所属・氏名・日付を入力するだけで、職印風の印影画像を簡単に作成！無料で使えるWebツールです。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://fujioka-adss1.github.io/shokuin-stamp/">
+  <meta property="og:image" content="https://fujioka-adss1.github.io/shokuin-stamp/ogp-image.png">
+  <meta property="og:site_name" content="職印すたんぷ">
+  <meta property="og:locale" content="ja_JP">
+
+  <!-- Twitterカード -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="職印すたんぷ">
+  <meta name="twitter:description" content="所属・氏名・日付を入力するだけで、職印風の印影画像を簡単に作成！無料で使えるWebツールです。">
+  <meta name="twitter:image" content="https://fujioka-adss1.github.io/shokuin-stamp//ogp-image.png">
+  <meta name="twitter:site" content="@adss1myopathy">
+
+  <title>職印すたんぷ</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="alternate icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
     html, body {
       height: 100%;
@@ -29,8 +49,9 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .input-row input,
@@ -39,11 +60,10 @@
       padding: 5px;
       min-width: 100px;
     }
-	.input-row label {
-	  display: inline-flex;
-	  align-items: center;
-	  gap: 4px;
-	}
+
+    .zoom-controls {
+      margin-bottom: 20px;
+    }
 
     .canvas-container {
       display: flex;
@@ -58,7 +78,6 @@
     }
 
     button {
-      margin-top: 5px;
       font-size: 1rem;
       padding: 6px 12px;
     }
@@ -92,7 +111,7 @@
     .follow-text {
       font-size: 0.8rem;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     @media (max-width: 600px) {
@@ -115,18 +134,26 @@
 </head>
 <body>
   <main>
-    <h1>職印ジェネレーター</h1>
-	<div class="input-row">
-	  <label><span>所属:</span> <input type="text" id="topText" maxlength="5" value="〇△部" /></label>
-	  <label><span>名前:</span> <input type="text" id="bottomText" maxlength="5" value="鈴木" /></label>
-	  <label><span>日付:</span> <input type="date" id="dateInput" /></label>
-	  <label><span>色:</span>
-	    <select id="colorSelect">
-	      <option value="red">赤</option>
-	      <option value="black">黒</option>
-	    </select>
-	  </label>
-	</div>
+    <h1>職印すたんぷ</h1>
+
+    <div class="input-row">
+      <label><span>所属:</span> <input type="text" id="topText" maxlength="5" value="〇△部" /></label>
+      <label><span>名前:</span> <input type="text" id="bottomText" maxlength="5" value="鈴木" /></label>
+      <label><span>日付:</span> <input type="date" id="dateInput" /></label>
+      <label><span>色:</span>
+        <select id="colorSelect">
+          <option value="red">赤</option>
+          <option value="black">黒</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="zoom-controls">
+      <button onclick="changeScale(-5)">−</button>
+      <span id="scaleDisplay">100%</span>
+      <button onclick="changeScale(5)">＋</button>
+      <button onclick="resetScale()">リセット</button>
+    </div>
 
     <div class="canvas-container">
       <div>
@@ -148,11 +175,7 @@
     <div class="footer-text">
       <span><a href="https://www.adss1myopathy.com" target="_blank" aria-label="HP">ADSS1ミオパチー患者家族会</a> は100万人に1人しかいない超希少疾患であるADSS1ミオパチーの認知を広め克服するための活動をしています</span>
     </div>
-
-    <div class="follow-text">
-      情報拡散にご協力ください. Follow us !!
-    </div>
-
+    <div class="follow-text">情報拡散にご協力ください. Follow us !!</div>
     <div class="social-icons">
       <a href="https://www.facebook.com/adss1myopathy/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
       <a href="https://www.instagram.com/adss1myopathy/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -166,19 +189,36 @@
     const bottomTextInput = document.getElementById('bottomText');
     const dateInput = document.getElementById('dateInput');
     const colorSelect = document.getElementById('colorSelect');
+    const scaleDisplay = document.getElementById('scaleDisplay');
 
     const today = new Date().toISOString().split('T')[0];
     const savedData = JSON.parse(localStorage.getItem('shokuinStampData') || '{}');
+
+    let scalePercent = savedData.scalePercent || 100;
+
     topTextInput.value = savedData.topText || '〇△部';
     bottomTextInput.value = savedData.bottomText || '鈴木';
     dateInput.value = savedData.date || today;
     colorSelect.value = savedData.color || 'red';
+    scaleDisplay.textContent = `${scalePercent}%`;
 
     const canvases = [
       { id: 'canvas1', scale: 1.0, rotation: 0 },
       { id: 'canvas2', scale: 0.95, rotation: -3 * Math.PI / 180 },
       { id: 'canvas3', scale: 0.9, rotation: -6 * Math.PI / 180 }
     ];
+
+    function changeScale(delta) {
+      scalePercent = Math.max(50, Math.min(200, scalePercent + delta));
+      scaleDisplay.textContent = `${scalePercent}%`;
+      drawAll();
+    }
+
+    function resetScale() {
+      scalePercent = 100;
+      scaleDisplay.textContent = `${scalePercent}%`;
+      drawAll();
+    }
 
     function drawAll() {
       canvases.forEach(cfg => drawStamp(cfg.id, cfg.scale, cfg.rotation));
@@ -187,9 +227,16 @@
     function drawStamp(canvasId, scale = 1, rotation = 0) {
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext('2d');
-      const size = canvas.width;
-      const fonts = { main: 'MS Mincho', date: 'MS Mincho' };
-      const fontSizes = { main: size / 50 * 9, date: size / 50 * 8 };
+
+      const baseSize = 120;
+      const size = baseSize * (scalePercent / 100);
+      canvas.width = size;
+      canvas.height = size;
+
+      const topText = topTextInput.value;
+      const bottomText = bottomTextInput.value;
+      const dateText = dateInput.value.replaceAll('-', '.');
+      const color = colorSelect.value;
 
       ctx.clearRect(0, 0, size, size);
       ctx.save();
@@ -198,39 +245,35 @@
       ctx.scale(scale, scale);
       ctx.translate(-size / 2, -size / 2);
 
-      const color = colorSelect.value;
-      const topText = topTextInput.value;
-      const bottomText = bottomTextInput.value;
-      const dateText = dateInput.value.replaceAll('-', '.');
-
+      const lineWidth = 3 * (scalePercent / 100);
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = lineWidth;
 
       ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2 - ctx.lineWidth, 0, 2 * Math.PI);
+      ctx.arc(size / 2, size / 2, size / 2 - lineWidth, 0, 2 * Math.PI);
       ctx.stroke();
 
-      ctx.font = `${fontSizes.main}px "${fonts.main}", serif`;
+      ctx.font = `${size / 50 * 9}px MS Mincho`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(topText, size / 2, size / 2 - size / 4 - ctx.lineWidth);
+      ctx.fillText(topText, size / 2, size / 2 - size / 4 - lineWidth);
 
       ctx.beginPath();
-      ctx.moveTo(ctx.lineWidth * 2, size / 2 - size / 8);
-      ctx.lineTo(size - ctx.lineWidth * 2, size / 2 - size / 8);
+      ctx.moveTo(lineWidth * 2, size / 2 - size / 8);
+      ctx.lineTo(size - lineWidth * 2, size / 2 - size / 8);
       ctx.stroke();
 
-      ctx.font = `${fontSizes.date}px "${fonts.date}", serif`;
+      ctx.font = `${size / 50 * 8}px MS Mincho`;
       ctx.fillText(dateText, size / 2, size / 2);
 
       ctx.beginPath();
-      ctx.moveTo(ctx.lineWidth * 2, size / 2 + size / 8);
-      ctx.lineTo(size - ctx.lineWidth * 2, size / 2 + size / 8);
+      ctx.moveTo(lineWidth * 2, size / 2 + size / 8);
+      ctx.lineTo(size - lineWidth * 2, size / 2 + size / 8);
       ctx.stroke();
 
-      ctx.font = `${fontSizes.main}px "${fonts.main}", serif`;
-      ctx.fillText(bottomText, size / 2, size / 2 + size / 4 + ctx.lineWidth);
+      ctx.font = `${size / 50 * 9}px MS Mincho`;
+      ctx.fillText(bottomText, size / 2, size / 2 + size / 4 + lineWidth);
 
       ctx.restore();
     }
@@ -240,14 +283,15 @@
         topText: topTextInput.value,
         bottomText: bottomTextInput.value,
         date: dateInput.value,
-        color: colorSelect.value
+        color: colorSelect.value,
+        scalePercent: scalePercent
       };
       localStorage.setItem('shokuinStampData', JSON.stringify(data));
 
       const canvas = document.getElementById(id);
       canvas.toBlob(blob => {
         navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-        .then(() => alert("コピーしました！"));
+          .then(() => alert("コピーしました！"));
       });
     }
 
