@@ -180,7 +180,7 @@
 
     topTextInput.value = savedData.topText || '〇△部';
     bottomTextInput.value = savedData.bottomText || '鈴木';
-    dateInput.value = savedData.date || today;
+    dateInput.value = today;
     colorSelect.value = savedData.color || 'red';
     scaleDisplay.textContent = `${scalePercent}%`;
 
@@ -264,7 +264,6 @@
       const data = {
         topText: topTextInput.value,
         bottomText: bottomTextInput.value,
-        date: dateInput.value,
         color: colorSelect.value,
         scalePercent: scalePercent
       };
